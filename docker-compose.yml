@@ -1,0 +1,33 @@
+# Laeuft LOKAL auf eurem Rechner. Der Self-Hosted-Runner fuehrt
+# "docker compose up -d --build" aus (siehe .github/workflows/deploy.yml).
+# Du kannst denselben Befehl auch von Hand ausfuehren (Fallback 1).
+
+name: kino-demo
+
+services:
+  kino-ui:
+    build: . # Image aus dem lokalen Dockerfile bauen (kein Registry-Pull)
+    image: kino-ui:local
+    restart: unless-stopped
+    ports:
+      - "8080:3000" # App im Browser unter http://localhost:8080
+    environment:
+      - PORT=3000
+
+  # --- Optional: der dritte Container der Kino-Architektur ----------------
+  # In der Live-Demo nutzt der Server bewusst einen In-Memory-Stub (src/db.js),
+  # damit nichts DB-Bezogenes die Demo stoert. So saehe der echte DB-Container
+  # aus; zum Aktivieren auskommentieren und src/db.js an die DB anbinden:
+  #
+  # db:
+  #   image: postgres:16-alpine
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_USER: kino
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}   # TODO: aus .env, nie im Klartext
+  #     POSTGRES_DB: kino
+  #   volumes:
+  #     - kino-db:/var/lib/postgresql/data
+
+# volumes:
+#   kino-db:

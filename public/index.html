@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kino — Jetzt im Kino</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <span class="logo">🎬 KINO</span>
+      <span class="env">lokal (Docker)</span>
+    </header>
+
+    <main>
+      <h1>Jetzt im Kino</h1>
+      <p class="subtitle">Aktuelles Programm — Daten kommen live vom Server</p>
+
+      <!-- Die Filmkarten werden aus /api/movies gefuellt (siehe app.js). -->
+      <section id="movies" class="grid" aria-live="polite">
+        <p class="loading">Lade Programm …</p>
+      </section>
+    </main>
+
+    <footer>
+      <span id="build">CI/CD-Demo · Kino-Projekt</span>
+    </footer>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+name: CI/CD Kino
+
+# Ausloeser des Workflows
+on:
+  pull_request: # bei jedem PR: nur testen (Qualitaetstor vor dem Merge)
+  push:
+    branches: [main] # bei Merge in main: testen + lokal deployen
+
+jobs:
+  # Job 1 — Continuous Integration: Tests
+  test:
+    runs-on: self-hosted # laeuft auf dem lokalen Runner (z. B. euer Laptop)
+    steps:
+      - uses: actions/checkout@v6 # Code auschecken
+      - uses: actions/setup-node@v6 # Toolchain bereitstellen
+        with:
+          node-version: 20
+      - run: npm ci # Abhaengigkeiten reproduzierbar aus dem Lockfile
+      - run: npm test # Unit-Tests (node --test)
+
+  # Job 2 — Deploy: Container LOKAL bauen und starten
+  deploy:
+    needs: test # nur, wenn Job "test" gruen ist -> blockiert einen kaputten Build
+    if: github.ref == 'refs/heads/main' # nur auf main deployen, nicht bei PRs
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v6
+      # Baut das Docker-Image aus dem lokalen Dockerfile und startet den
+      # Container neu. Kein Registry-Push, kein SSH, KEINE Secrets noetig.
+      - run: docker compose up -d --build
+      # Die App laeuft jetzt auf http://localhost:8080
+
+      # --- Portabilitaet: fuer ein echtes Remote-Deployment wuerde hier nur
+      # --- der letzte Schritt ersetzt (Image in eine Registry pushen + per SSH
+      # --- auf einem Server "docker compose pull && up -d") und die noetigen
+      # --- Zugangsdaten als GitHub Secrets ergaenzt. Der Rest bleibt gleich.
