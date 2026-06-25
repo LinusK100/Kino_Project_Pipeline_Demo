@@ -8,7 +8,7 @@ Kein externes Hosting, keine Server-Zugänge, keine Secrets nötig.
 
 ```bash
 npm ci && npm start      # http://localhost:3000  ("Jetzt im Kino")
-npm test                 # 6 Unit-Tests
+npm test                 # 14 Unit-Tests (Preislogik + Programm)
 docker compose up -d --build   # App als Container auf http://localhost:8080
 ```
 
@@ -16,9 +16,10 @@ docker compose up -d --build   # App als Container auf http://localhost:8080
 - **Was du selbst tun musst:** siehe [NOCH-ZU-TUN.md](NOCH-ZU-TUN.md)
 - **Demo-Ablauf (Drehbuch):** siehe [DEMO-RUNBOOK.md](DEMO-RUNBOOK.md)
 
-Sichtbare Demo-Änderung: Filmtitel in `src/db.js`.
-„Build kaputtmachen"-Stelle: Preislogik in `src/price.js` (Test in
-`test/price.test.js`).
+Programmdaten: echtes Kinoprogramm aus dem CineTicket-Prototyp (in `src/db.js`).
+Sichtbare Demo-Änderung: Filmtitel von Film 1 in `src/db.js`.
+„Build kaputtmachen"-Stelle: Preislogik in `src/price.js` (Tests in
+`test/price.test.js` und `test/db.test.js`).
 
 > **Portabilität:** Für ein echtes Remote-Deployment würde nur der letzte
 > Schritt ersetzt (Image in eine Registry pushen + per SSH auf einen Server
