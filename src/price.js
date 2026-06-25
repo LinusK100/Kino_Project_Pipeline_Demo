@@ -11,7 +11,19 @@ export const BASE_PRICES = {
   kind: 7.0, // bis 12 Jahre
 };
 
-export const OVERLENGTH_SURCHARGE = 1.5; // Zuschlag fuer Ueberlaenge (> 150 Min.)
+export const OVERLENGTH_SURCHARGE = 1.5; // Zuschlag fuer Ueberlaenge
+export const OVERLENGTH_THRESHOLD_MINUTES = 120; // ab dieser Laufzeit gilt Ueberlaenge
+
+/**
+ * Gilt ein Film mit dieser Laufzeit als Ueberlaenge?
+ * Reine Funktion (eine Quelle der Wahrheit fuer die Ueberlaengen-Regel) — so
+ * leitet die Datenschicht den Zuschlag direkt aus der echten Laufzeit ab.
+ * @param {number} durationMinutes
+ * @returns {boolean}
+ */
+export function isOverlength(durationMinutes) {
+  return durationMinutes > OVERLENGTH_THRESHOLD_MINUTES;
+}
 
 /**
  * Berechnet den Ticketpreis fuer eine Vorstellung.

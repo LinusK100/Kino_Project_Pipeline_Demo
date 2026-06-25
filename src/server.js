@@ -11,6 +11,13 @@ import { getMovies } from './db.js';
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public');
 
+// Version + Startzeitpunkt des laufenden Containers. Die Version setzt der
+// Deploy-Job auf den Commit-SHA (siehe .github/workflows/deploy.yml); beides
+// macht in der Demo sichtbar, dass wirklich ein NEUER Container ausgeliefert
+// wurde (Titel + Version + Startzeit aendern sich).
+const VERSION = process.env.APP_VERSION || 'dev';
+const STARTED_AT = new Date().toISOString();
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -40,7 +47,8 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
   // API: liefert die Daten, die die UI anzeigt (Server -> UI).
-  if (url.pathname === '/api/health') return sendJson(res, 200, { status: 'ok' });
+  if (url.pathname === '/api/health')
+    return sendJson(res, 200, { status: 'ok', version: VERSION, startedAt: STARTED_AT });
   if (url.pathname === '/api/movies') return sendJson(res, 200, { movies: getMovies() });
 
   // UI: statische Dateien aus public/.

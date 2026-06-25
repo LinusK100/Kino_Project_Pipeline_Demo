@@ -13,6 +13,9 @@ services:
       - "8080:3000" # App im Browser unter http://localhost:8080
     environment:
       - PORT=3000
+      # Version des laufenden Containers. Der Deploy-Job setzt APP_VERSION auf
+      # den Commit-SHA; bei manuellem Start faellt sie auf "dev" zurueck.
+      - APP_VERSION=${APP_VERSION:-dev}
 
   # --- Optional: der dritte Container der Kino-Architektur ----------------
   # In der Live-Demo nutzt der Server bewusst einen In-Memory-Stub (src/db.js),

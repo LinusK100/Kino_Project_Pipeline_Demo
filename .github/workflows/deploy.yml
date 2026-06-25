@@ -1,15 +1,34 @@
 name: CI/CD Kino
 
+# Lesbarer Lauf-Titel in der Actions-UI (gut am Beamer): Wer hat was ausgeloest.
+run-name: CI/CD Kino · ${{ github.event_name }} von @${{ github.actor }}
+
 # Ausloeser des Workflows
 on:
   pull_request: # bei jedem PR: nur testen (Qualitaetstor vor dem Merge)
   push:
     branches: [main] # bei Merge in main: testen + lokal deployen
+  workflow_dispatch: {} # manueller Start aus der Actions-UI (Demo-Fallback)
+
+# Least Privilege: Der Workflow pusht/schreibt nichts, also nur Lese-Rechte.
+permissions:
+  contents: read
+
+# Veraltete Laeufe desselben Branches abloesen, damit in der Demo keine alten
+# PR-Laeufe die Warteschlange verstopfen. Deploys auf main lassen wir bewusst
+# auslaufen (kein Abbruch mitten im Container-Start).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Job 1 — Continuous Integration: Tests
+  # WICHTIG: KEIN "name:" setzen! Der gemeldete Status-Check heisst sonst nicht
+  # mehr "test" — die Branch-Protection-Regel (Required Check "test") wuerde dann
+  # ewig auf einen nie gemeldeten Check warten und den Merge dauerhaft sperren.
   test:
     runs-on: self-hosted # laeuft auf dem lokalen Runner (z. B. euer Laptop)
+    timeout-minutes: 10 # haengt nie ewig — wichtig live
     steps:
       - uses: actions/checkout@v6 # Code auschecken
       - uses: actions/setup-node@v6 # Toolchain bereitstellen
@@ -18,19 +37,43 @@ jobs:
       - run: npm ci # Abhaengigkeiten reproduzierbar aus dem Lockfile
       - run: npm test # Unit-Tests (node --test)
 
-  # Job 2 — Deploy: Container LOKAL bauen und starten
+  # Job 2 — Deploy: Container LOKAL bauen, starten und verifizieren
   deploy:
+    name: 🚀 Deploy (lokal)
     needs: test # nur, wenn Job "test" gruen ist -> blockiert einen kaputten Build
     if: github.ref == 'refs/heads/main' # nur auf main deployen, nicht bei PRs
     runs-on: self-hosted
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
+
       # Baut das Docker-Image aus dem lokalen Dockerfile und startet den
-      # Container neu. Kein Registry-Push, kein SSH, KEINE Secrets noetig.
-      - run: docker compose up -d --build
-      # Die App laeuft jetzt auf http://localhost:8080
+      # Container neu. Der Commit-SHA wandert als Version in den Container
+      # (sichtbar im Footer der App). Kein Registry-Push, kein SSH, KEINE Secrets.
+      - name: Image bauen & Container starten
+        run: docker compose up -d --build
+        env:
+          APP_VERSION: ${{ github.sha }}
+
+      # Der Deploy verifiziert sich selbst: warten, bis die API "ok" liefert.
+      # Schlaegt fehl, falls der Container nicht hochkommt -> roter Deploy
+      # statt einer kaputten App, die "scheinbar" deployt wurde.
+      - name: Smoke-Test (Health-Check)
+        run: |
+          for i in $(seq 1 15); do
+            if curl -fsS http://localhost:8080/api/health > /dev/null; then
+              echo "App ist gesund und erreichbar (Versuch $i)."
+              curl -fsS http://localhost:8080/api/health
+              exit 0
+            fi
+            echo "warte auf die App ($i/15) ..."
+            sleep 2
+          done
+          echo "App nach Deploy nicht erreichbar"
+          exit 1
 
       # --- Portabilitaet: fuer ein echtes Remote-Deployment wuerde hier nur
-      # --- der letzte Schritt ersetzt (Image in eine Registry pushen + per SSH
-      # --- auf einem Server "docker compose pull && up -d") und die noetigen
-      # --- Zugangsdaten als GitHub Secrets ergaenzt. Der Rest bleibt gleich.
+      # --- der "Image bauen & starten"-Schritt ersetzt (Image in eine Registry
+      # --- pushen + per SSH auf einem Server "docker compose pull && up -d") und
+      # --- die noetigen Zugangsdaten als GitHub Secrets ergaenzt. Der Smoke-Test
+      # --- und der Rest der Pipeline blieben identisch.

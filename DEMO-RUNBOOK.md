@@ -23,7 +23,7 @@ Auf dem Bildschirm offen und vorbereitet:
 - [ ] **Terminal 2 — Repo:** im Projektordner, auf `main`, sauberer Stand
       (`git status` leer, `git pull` gemacht).
 - [ ] **Browser-Tab 1 — laufende App:** `http://localhost:8080`
-      („Jetzt im Kino", Film 1 = *Dune: Part Two*).
+      („Jetzt im Kino", Film 1 = *Venom: The Last Dance*).
 - [ ] **Browser-Tab 2 — GitHub Actions:** Repo → Reiter **Actions**.
 - [ ] **Browser-Tab 3 — GitHub Code/PR:** Repo-Startseite.
 - [ ] **Editor** offen mit `src/db.js` und `src/price.js`.
@@ -41,10 +41,11 @@ für einen echten Server würde sich nur der letzte Schritt ändern."*
 ## TEIL 1 — Happy Path: Änderung läuft automatisch live (~3–4 Min.)
 
 ### Schritt 1 — Ausgangszustand zeigen · *~20 s*
-- **Bildschirm:** Tab 1 (App, `localhost:8080`), auf *Dune: Part Two* zeigen.
-- **Sagen:** *„Das ist die laufende Version. Merkt euch den ersten Film. Diesen
-  Titel ändere ich jetzt — und starte den Container danach mit keinem einzigen
-  Handgriff selbst."*
+- **Bildschirm:** Tab 1 (App, `localhost:8080`), auf *Venom: The Last Dance* zeigen.
+- **Sagen:** *„Das ist die laufende Version — echtes Kinoprogramm mit Genre,
+  Länge, FSK und Bewertung, das der Server live liefert. Merkt euch den ersten
+  Film. Diesen Titel ändere ich jetzt — und starte den Container danach mit
+  keinem einzigen Handgriff selbst."*
 
 ### Schritt 2 — Branch anlegen · *~10 s*
 - **Terminal 2:**
@@ -56,7 +57,7 @@ für einen echten Server würde sich nur der letzte Schritt ändern."*
 
 ### Schritt 3 — Sichtbare Änderung machen · *~30 s*
 - **Editor:** `src/db.js`, Titel von Film 1 ändern, z. B.
-  `'Dune: Part Two'` → `'Dune: Part Two — Director's Cut'`.
+  `'Venom: The Last Dance'` → `'Venom: The Last Dance — IMAX-Fassung'`.
 - **Sagen:** *„Eine winzige, klar sichtbare Änderung. Wichtig: Der Titel kommt
   aus dem Server über die API — die UI kennt die Datenquelle gar nicht.
   Information Hiding in klein."*
@@ -98,12 +99,20 @@ für einen echten Server würde sich nur der letzte Schritt ändern."*
     Container neu — mit `docker compose up -d --build`, lokal auf diesem Rechner.
     Kein Hand-Deploy, keine Schneeflocke. Genau dieser eine Schritt würde für
     einen echten Server ausgetauscht; der Rest bliebe gleich."*
-- **Realistische Dauer:** `test` ~30–40 s, `deploy` (Image-Build) ~30–60 s.
+  - beim **Smoke-Test** (letzter Schritt in `deploy`): *„Und der Deploy prüft
+    sich selbst: Er fragt die `/api/health`-API ab und wird nur grün, wenn der
+    neue Container wirklich antwortet. Ein Container, der nicht hochkommt, macht
+    den Deploy rot — statt eine kaputte App still auszuliefern."*
+- **Realistische Dauer:** `test` ~30–40 s, `deploy` (Image-Build + Health-Check)
+  ~30–60 s.
 
 ### Schritt 9 — Ergebnis live zeigen · *~20 s*
 - **Bildschirm:** Tab 1 (App, `localhost:8080`) → **neu laden** (Hard-Reload, ⇧⌘R).
 - **Sagen:** *„Und da ist der neue Titel — live. Vom Commit bis zur laufenden
   App: wenige Minuten, vollautomatisch. Das ist Continuous Delivery/Deployment."*
+- **Optional zeigen:** Im Footer stehen jetzt eine neue **Version** (der
+  Commit-SHA) und eine frische **Startzeit** — beweist, dass wirklich ein neuer
+  Container ausgeliefert wurde, nicht nur der Browser-Cache.
 
 ---
 
@@ -128,7 +137,8 @@ für einen echten Server würde sich nur der letzte Schritt ändern."*
 
 ### Schritt 12 — Roten Test zeigen · *~40–60 s*
 - **Bildschirm:** Im PR / Actions zusehen, wie **`test` rot** wird
-  (3 Preis-Tests schlagen fehl). Auf den **gesperrten Merge-Button** zeigen.
+  (5 Tests schlagen fehl: 3 aus der Preislogik, 2 aus dem Programm — die
+  Datenschicht ist mitgetestet). Auf den **gesperrten Merge-Button** zeigen.
 - **Sagen:** *„Rot. Und der Merge ist gesperrt. Der kaputte Stand kommt nicht
   nach main — und damit startet der `deploy`-Job gar nicht erst."*
 
@@ -156,6 +166,11 @@ für einen echten Server würde sich nur der letzte Schritt ändern."*
 Pipeline hängt > ~2 Min.
 
 **Sofort umschalten auf (gestaffelt):**
+
+0. **Lauf wiederholen / manuell starten (schnellster Griff):** Im **Actions**-Tab
+   beim hängenden Lauf **„Re-run jobs"**, oder über **„Run workflow"**
+   (`workflow_dispatch`) einen frischen Lauf auf dem Branch auslösen — ohne neuen
+   Commit. Hilft, wenn der Runner einen Job verschluckt hat.
 
 1. **Präsentations-Folien 17/18 (`[FALLBACK]`)** mit den vorbereiteten
    Screenshots — den exakt gleichen Ablauf daran erzählen. Reihenfolge =

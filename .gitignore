@@ -4,3 +4,7 @@ node_modules/
 *.log
 .DS_Store
 _screenshots/
+
+# Self-Hosted-Runner liegt lokal im Projektordner, gehoert aber NICHT ins Repo
+# (gross + maschinengebunden + enthaelt Runner-Credentials).
+actions-runner/

@@ -57,8 +57,35 @@ h1 { font-size: 2.4rem; margin: 0 0 0.25rem; }
   gap: 0.5rem;
 }
 
-.title { font-size: 1.25rem; margin: 0; }
-.price { color: var(--muted); margin: 0; font-weight: 600; }
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.title { font-size: 1.2rem; margin: 0; line-height: 1.2; }
+
+.fsk {
+  flex: none;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #b42318;
+  border: 1.5px solid #b42318;
+  border-radius: 6px;
+  padding: 0.1rem 0.35rem;
+  white-space: nowrap;
+}
+
+.meta { color: var(--muted); margin: 0; font-size: 0.85rem; }
+.tag {
+  background: var(--gold);
+  color: #3a2a00;
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 0 0.3rem;
+}
+.rating { color: var(--gold); margin: 0; font-weight: 700; font-size: 0.95rem; }
+.price { color: var(--text); margin: 0.15rem 0 0; font-weight: 700; font-size: 1.05rem; }
 
 .btn {
   margin-top: auto;

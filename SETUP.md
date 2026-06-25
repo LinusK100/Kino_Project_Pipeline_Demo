@@ -11,9 +11,10 @@ kino-demo/
 ├── src/
 │   ├── server.js   # Node-Server (Standardbibliothek, keine Frameworks)
 │   ├── price.js    # Ticketpreis-Logik  ← der "Build kaputtmachen"-Test trifft hier
-│   └── db.js       # "Datenbank"-Stub (In-Memory), liefert das Kino-Programm
+│   └── db.js       # "Datenbank"-Stub (In-Memory), echtes Programm aus CineTicket
 ├── public/         # UI: index.html / app.js / styles.css ("Jetzt im Kino")
-├── test/price.test.js          # Unit-Tests (node --test)
+├── test/price.test.js          # Unit-Tests Preislogik (node --test)
+├── test/db.test.js             # Unit-Tests Datenschicht/Programm
 ├── Dockerfile                  # baut das Image "kino-ui:local"
 ├── docker-compose.yml          # baut + startet den Container lokal (Port 8080)
 └── .github/workflows/deploy.yml  # test → deploy (self-hosted, lokal)
@@ -38,7 +39,7 @@ kino-demo/
 cd kino-demo
 npm ci          # Abhängigkeiten aus dem Lockfile (hier: nur Node-Standard)
 npm start       # Server auf http://localhost:3000
-npm test        # 6 Unit-Tests, müssen grün sein
+npm test        # 14 Unit-Tests, müssen grün sein
 ```
 
 **Variante B — als Container (so wie der Deploy):**
@@ -163,7 +164,7 @@ sichtbaren Deploy dann Fallback 1.
 
 **A — Lokal (1 Min.):**
 ```bash
-npm ci && npm test                 # 6/6 grün
+npm ci && npm test                 # 14/14 grün
 docker compose up -d --build       # App auf http://localhost:8080 prüfen
 docker compose down
 ```

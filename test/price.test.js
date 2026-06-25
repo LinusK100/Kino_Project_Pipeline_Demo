@@ -6,7 +6,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { calculatePrice } from '../src/price.js';
+import { calculatePrice, isOverlength } from '../src/price.js';
 
 test('Normalpreis betraegt 12,00 Euro', () => {
   assert.equal(calculatePrice({ category: 'normal' }), 12.0);
@@ -30,4 +30,16 @@ test('Standard ist Normalpreis ohne Zuschlag', () => {
 
 test('Unbekannte Kategorie wirft einen Fehler', () => {
   assert.throws(() => calculatePrice({ category: 'gold' }));
+});
+
+test('Ueberlaenge: Film ueber 120 Min. gilt als Ueberlaenge', () => {
+  assert.equal(isOverlength(132), true);
+});
+
+test('Ueberlaenge: genau 120 Min. ist noch keine Ueberlaenge', () => {
+  assert.equal(isOverlength(120), false);
+});
+
+test('Ueberlaenge: kurzer Film ist keine Ueberlaenge', () => {
+  assert.equal(isOverlength(100), false);
 });

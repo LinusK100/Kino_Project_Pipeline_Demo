@@ -102,7 +102,7 @@ mit „Jetzt im Kino" erscheint. `docker compose ps` zeigt den Container `kino-u
 
 Spiele den kompletten Demo-Ablauf einmal durch (Details: `DEMO-RUNBOOK.md`):
 
-- [ ] **Lokal:** `npm ci && npm test` → 6/6 grün; `docker compose up -d --build`
+- [ ] **Lokal:** `npm ci && npm test` → 14/14 grün; `docker compose up -d --build`
       → `http://localhost:8080` prüfen; `docker compose down`.
 - [ ] **Happy Path:** `./run.sh` läuft → Branch → Filmtitel in `src/db.js`
       ändern → commit/push → PR → `test` grün → mergen → `deploy` grün →
