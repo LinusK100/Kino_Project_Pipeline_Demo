@@ -14,8 +14,8 @@ import { calculatePrice, isOverlength } from './price.js';
 // Das aktuelle Kino-Programm (Quelle: CineTicket-Prototyp). Der Filmtitel von
 // Eintrag 1 ist die "sichtbare Aenderung" in der Demo (siehe DEMO-RUNBOOK.md).
 const MOVIES = [
-  { id: 1, title: 'Venom: The Last Dance — Directors Cut', genres: ['Action', 'Sci-Fi'], durationMinutes: 109, ageRating: 'FSK 12', rating: 6.8 },
-  { id: 2, title: 'Der wilde Roboter', genres: ['Animation', 'Familie'], durationMinutes: 102, ageRating: 'FSK 0', rating: 8.4 },
+  { id: 1, title: 'Venom: The Last Dance', genres: ['Action', 'Sci-Fi'], durationMinutes: 109, ageRating: 'FSK 12', rating: 6.8 },
+  { id: 2, title: 'Der wilde Roboter - Directors Cut', genres: ['Animation', 'Familie'], durationMinutes: 102, ageRating: 'FSK 0', rating: 8.4 },
   { id: 3, title: 'Smile 2', genres: ['Horror', 'Mystery'], durationMinutes: 132, ageRating: 'FSK 16', rating: 7.0 },
   { id: 4, title: 'Deadpool & Wolverine', genres: ['Action', 'Komödie'], durationMinutes: 128, ageRating: 'FSK 16', rating: 7.7 },
   { id: 5, title: 'Vaiana 2', genres: ['Animation', 'Familie'], durationMinutes: 100, ageRating: 'FSK 0', rating: 7.1 },
