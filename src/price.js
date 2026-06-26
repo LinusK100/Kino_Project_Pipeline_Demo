@@ -6,7 +6,7 @@
 // test/price.test.js ab — und damit auch der "Build kaputtmachen"-Moment der Demo.
 
 export const BASE_PRICES = {
-  normal: 13.0, // Standardticket
+  normal: 12.0, // Standardticket
   ermaessigt: 9.0, // Schueler, Studierende
   kind: 7.0, // bis 12 Jahre
 };
